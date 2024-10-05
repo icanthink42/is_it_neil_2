@@ -39,7 +39,7 @@ class ButtonsUI(discord.ui.View):
             )
         else:
             neiler_id = 0
-            while neiler_id != 0 and neiler_id != interaction.user.id:
+            while neiler_id == 0 or neiler_id == interaction.user.id:
                 neiler_id = random.choice(self.save_game.neilers)
             neiler = await self.client.fetch_user(neiler_id)
             await neiler.send(
@@ -68,7 +68,7 @@ class ButtonsUI(discord.ui.View):
             return
 
         if game.is_neil(self.save_game.config):
-            neiler_id = self.save_game.config["neil"]
+            neiler_id = game.neiler_id
             neiler = await self.client.fetch_user(neiler_id)
             await neiler.send(
                 f"<@{interaction.user.id}> succesfully guessed you were Neil!"
@@ -77,7 +77,7 @@ class ButtonsUI(discord.ui.View):
                 "You guessed correctly! You were talking to Neil.", ephemeral=True
             )
         else:
-            neiler_id = self.save_game.config["neil"]
+            neiler_id = game.neiler_id
             neiler = await self.client.fetch_user(neiler_id)
             await neiler.send(
                 f"<@{interaction.user.id}> guessed incorrectly! They thought you were Neil. Good job!"
@@ -104,8 +104,8 @@ class ButtonsUI(discord.ui.View):
             )
             return
 
-        if game.is_neil():
-            neiler_id = self.save_game.config["neil"]
+        if game.is_neil(self.save_game.config):
+            neiler_id = game.neiler_id
             neiler = await self.client.fetch_user(neiler_id)
             await neiler.send(
                 f"<@{interaction.user.id}> thought they were talking to Neil! Good job!"
@@ -114,7 +114,7 @@ class ButtonsUI(discord.ui.View):
                 "You guessed incorrectly! You were talking to Neil.", ephemeral=True
             )
         else:
-            neiler_id = self.save_game.config["neil"]
+            neiler_id = game.neiler_id
             neiler = await self.client.fetch_user(neiler_id)
             await neiler.send(
                 f"<@{interaction.user.id}> guessed correctly! They realized you were not Neil."

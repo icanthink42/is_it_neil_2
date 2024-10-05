@@ -30,7 +30,8 @@ async def on_ready():
 @bot.slash_command(guild_ids=config["guild_ids"])
 async def spawn_buttons(ctx):
     await ctx.respond(
-        "Is it Neil???", view=ButtonsUI(save_game=save_game, client=bot), ephemeral=True
+        "Is it Neil???",
+        view=ButtonsUI(save_game=save_game, client=bot),
     )
 
 
@@ -49,6 +50,14 @@ async def on_message(message: discord.Message):
     split_message = reply_message.content.replace("@", "").replace("<", ">").split(">")
     if len(split_message) > 1:
         other_user_id = int(split_message[1])
+        for game in save_game.games:
+            if game.guesser_id == other_user_id and game.neiler_id == message.author.id:
+                break
+        else:
+            await message.reply(
+                f"You are not playing a game with <@{other_user_id}> right now!"
+            )
+            return
     else:
         is_guesser = True
         for game in save_game.games:
@@ -56,6 +65,7 @@ async def on_message(message: discord.Message):
                 other_user_id = game.neiler_id
                 break
         else:
+            await message.reply("You are not playing a game as a guesser right now!")
             return
     other_user = await bot.fetch_user(other_user_id)
     if is_guesser:
