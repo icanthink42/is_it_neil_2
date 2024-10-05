@@ -10,7 +10,7 @@ class ButtonsUI(discord.ui.View):
     def __init__(
         self,
         *items: Item,
-        timeout: float | None = 180,
+        timeout=180,
         disable_on_timeout: bool = False,
         save_game,
         client,
